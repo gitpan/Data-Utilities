@@ -1,0 +1,16 @@
+Changes
+LICENSE
+MANIFEST
+Makefile.PL
+README
+Todo
+lib/Data/Comparator.pm
+lib/Data/Differences.pm
+lib/Data/Transformator.pm
+lib/Data/Utilities.pm
+t/001_load.t
+t/0.t
+t/1.t
+t/array1.t
+t/comparator1.t
+META.yml                                 Module meta-data (added by MakeMaker)
