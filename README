@@ -1,5 +1,15 @@
 pod2text Data::Utilities.pm > README
 
+These modules do intelligent things with nested perl data structures.
+The transformation engine is a general simple transformation engine
+and can run in a selective mode or a constructive mode.  In the
+selective mode, it behaves like a database query engine.  In the
+constructive mode it constructs a result based on the structure of the
+original data.  Transformations can be cascaded.  The merger also
+deals with general nested perl data structures.  The Comparator
+generates structured differences that mirror the structure of the
+compared data structures.
+
 If this is still here it means the programmer was too lazy to create the readme file.
 
 You can create it now by using the command shown above from this directory.

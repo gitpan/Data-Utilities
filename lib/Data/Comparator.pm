@@ -88,20 +88,75 @@ sub array_comparator
 }
 
 
-#
-# data_comparator()
-#
-# Compare two sets of (structured) data, report on the differences
-# found with a differences describing data structure.  Additionally a
-# set of expected differences may be given in the form of a
-# differences describing data structure.
-#
-# Note : do not try this on self-referential structures.
-#
-# Returns a differences describing data structure, which is empty if
-# no differences are found.  The type of the result is the same as the
-# type of the second data structure given.
-#
+=head1 NAME
+
+Data::Comparator - recursively compare Perl datatypes
+
+=head1 SYNOPSIS
+
+  use Data::Comparator qw(data_comparator);
+  
+  $a = { 'foo' => 'bar', 'move' => 'zig' };
+  $b = [ 'alpha', 'beta', 'gamma', 'vlissides' ];
+
+  $diff = data_comparator($a, $b);
+
+  use Data::Dumper;
+
+  print Dumper($diff);
+
+  if ($diff->is_empty())
+  {
+      print '$a and $b are alike\n';
+  }
+  else
+  {
+      print '$a and $b are not alike\n';
+  }
+
+=head1 DESCRIPTION
+
+Compare two sets of (structured) data, report on the differences found
+with a differences describing data structure.  Additionally a set of
+expected differences may be given in the form of a differences
+describing data structure.
+
+Returns a differences describing data structure, which is empty if no
+differences are found.  The type of the result is the same as the type
+of the second data structure given.
+
+The algorithm used is of a subtractive kind.  It subtracts the first
+data structure given from the second one.  This means that, since it
+is not possible to subtract what is not given in the subtractor, not
+all differences are reported.  To have a report of all differences
+between structures A and B, first subtract A from B, next subtract B
+from A, using this module.  The two result sets are an exact
+description of the differences between A and B.
+
+It is possible to add any of the methods array_comparator(),
+hash_comparator(), data_comparator() to an existing object, or to use
+these as regular subs.
+
+=head1 BUGS
+
+Does only work with scalars, hashes and arrays.  Does not work on
+self-referential structures.
+
+=head1 AUTHOR
+
+Hugo Cornelis, hugo.cornelis@gmail.com
+
+Copyright 2007 Hugo Cornelis.
+
+This module is free software; you can redistribute it and/or
+modify it under the same terms as Perl itself.
+
+=head1 SEE ALSO
+
+Data::Merger(3), Data::Transformator(3), Data::Differences(3),
+Clone(3)
+
+=cut
 
 sub data_comparator
 {

@@ -1,3 +1,4 @@
+Build.PL
 Changes
 LICENSE
 MANIFEST
@@ -5,6 +6,7 @@ Makefile.PL
 README
 Todo
 lib/Data/Comparator.pm
+lib/Data/Merger.pm
 lib/Data/Differences.pm
 lib/Data/Transformator.pm
 lib/Data/Utilities.pm

@@ -12,7 +12,7 @@ BEGIN
 {
     use Exporter ();
     use vars qw($VERSION @ISA @EXPORT @EXPORT_OK %EXPORT_TAGS);
-    $VERSION     = '0.01';
+    $VERSION     = '0.02';
     @ISA         = qw(Exporter);
     #Give a hoot don't pollute, do not export more than needed by default
     @EXPORT      = qw();
@@ -23,6 +23,7 @@ BEGIN
 
 use Data::Comparator;
 use Data::Differences;
+use Data::Merger;
 use Data::Transformator;
 
 
@@ -96,7 +97,8 @@ Data::Utilities - General utilities for nested perl data structures.
 =head1 DESCRIPTION
 
 Data::Utilities contains general tools to transform, merge, compare
-nested perl data structures.
+nested perl data structures.  See the documentation of the modules in
+this package as indicated below.
 
 =head1 USAGE
 
@@ -107,12 +109,6 @@ best way to learn how to use it, is to take a look at the test cases.
 The Neurospaces project (L<http://www.neurospaces.org/>) makes heavy
 use of these utilities.  So you can find some examples overthere to,
 especially in the test framework.
-
-=head1 BUGS
-
-Many.  I make it work for me, and share the result.  I am happy to
-incorporate fixes for other people.  I have little time to support
-everything.
 
 =head1 AUTHOR
 
@@ -133,7 +129,8 @@ LICENSE file included with this module.
 
 =head1 SEE ALSO
 
-perl(1).
+Data::Comparator(3), Data::Merger(3), Data::Transformator(3),
+Data::Differences(3).
 
 =cut
 

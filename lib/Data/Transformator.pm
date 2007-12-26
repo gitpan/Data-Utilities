@@ -6,107 +6,300 @@
 # http://www.newtec.be/.
 #
 
-#
-# Sesa data transformations
-#
-#
-# What are Sesa Data Transformations
-#
-# The Sesa data transformator allows to transform a nested perl data structure
-# -- the source data -- in a new nested perl data structure -- the result
-# data. The source nested data structure can contain perl hashes, arrays and
-# scalars, but should not be self-referential (if I remember well, the
-# existing protection against self-referential data structures in the
-# transformator engine is currently broken). Running a transformation can be
-# done in two essentially different ways :
-#
-#     * extract data from an existing source : the transformation applies an
-#       identity transformation (meaning copy the source structure to the
-#       result), and during the process it uses selectors to select what data
-#       from the source to copy to the result. The result automatically
-#       inherits the structure from the source. This is called a selective
-#       transformation.
-#
-#     * copy data from source to result : the transformation must be told what
-#       the exact structure of the result is, before the result data can be
-#       inserted into the result. This is called a constructive
-#       transformation.
-#
-# It is possible to combine the two above, but that is currently not tested
-# enough to be sure it works alright.
-#
-# For the interested reader, please follow these reasoning steps :
-#
-#    1. A database query of a relational database (using tables and nested
-#       tabled) can always be written out in one of the XML query dialects.
-#
-#    2. Following from point 1: a database query can be expressed as a
-#       structured query.
-#
-#    3. A structured query can be summarized as
-#
-#          1. a selection of data from a preexisting data source.
-#
-#          2. a structural simplification of the selection.
-#
-#    4. Combining the above : a Sesa query can be defined as applying (1) a
-#       selective transformation and (2) a constructive transformation in
-#       sequence to a preexisting data source. This is called cascaded
-#       transformations.
-#
-#
-# Using Sesa Data Transformations
-#
-# To use Sesa Data Transformations, you have to
-#
-#    1. Construct the transformation with appropriate options :
-#
-#           * Give the transformation a name, the name describes the purpose
-#             and/or activities for the transformation.
-#
-#           * Tell the transformation if you want it to run as a selective
-#             transformation or not (option name
-#             'apply_identity_transformation'). Transformations can always be
-#             used as constructive transformations.
-#
-#           * Tell the transformation how to find the data source.
-#
-#                 o Or the data source is literal content (option name
-#                   'contents').
-#
-#                 o Or the data source is an object that implements a
-#                   'generate' method (option name 'source'). Sesa
-#                   transformations implement themselves a '->generate()'
-#                   method such that Sesa transformations can be cascaded
-#                   easily.
-#
-#           * Tell the transformation what to transform (selection) and how to
-#             transform (generate result). The best thing to do is to look at
-#             existing examples, e.g. in the unit tests of the transformation
-#             engine or in one of the Sesa modules.
-#
-#    2. Call the '->transform()' method on the transformator.
-#
-#    3. Use the result data that is returned by the '->transform()' method.
-#
-#
-# The transformation library
-#
-# There is a small transformation library embedded in the Sesa data
-# transformation engine. This library currently allows to
-#
-#     * transform an array to be found somewhere in the data source to a hash
-#       in the result set.
-#
-#     * transform a hash to be found somewhere in the data source to an array
-#       in the result set.
-#
-# The library generates closures that work on the source data.
-#
-# -- HugoCornelis - 26 Aug 2005
-#
+=head1 NAME
+
+Data::Transformator - transform nested Perl data structures.
+
+=head1 SYNOPSIS
+
+   From one of the test cases:
+
+    use Data::Transformator;
+
+    my $tree
+	= {
+	   e => [
+		 {
+		  e1 => {
+			},
+		 },
+		 {
+		  e2 => {
+			},
+		 },
+		 {
+		  e3 => {
+			},
+		 },
+		],
+	  };
+
+    my $expected_data
+	= {
+	   e => [
+		 {
+		  e1 => {
+			},
+		 },
+		],
+	  };
+
+    my $transformation
+	= Data::Transformator->new
+	    (
+	     name => 'test_transform3',
+	     contents => $tree,
+	     apply_identity_transformation => {
+					       e => [
+						     1,
+						    ],
+					      },
+	    );
+
+    my $transformed_data = $transformation->transform();
+
+    use Data::Comparator qw(data_comparator);
+
+    my $differences = data_comparator($transformed_data, $expected_data);
+
+    if ($differences->is_empty())
+    {
+	print "$0: 3: success\n";
+
+	ok(1, '3: success');
+    }
+    else
+    {
+	print "$0: 3: failed\n";
+
+	ok(0, '3: failed');
+    }
+
+=head1 DESCRIPTION
+
+Data::Transformator allows to transform a nested perl data structure
+-- the source data -- in a new nested perl data structure -- the
+result data. The source nested data structure can contain perl hashes,
+arrays and scalars, but should not be self-referential (if I remember
+well, the existing protection against self-referential data structures
+in the transformator engine is currently broken).
+
+=head1 USE
+
+Running a transformation can be done in two essentially different
+ways:
+
+=over 2
+
+=item
+
+extract data from an existing source : the transformation applies an
+identity transformation (meaning copy the source structure to the
+result), and during the process it uses selectors to select what data
+from the source to copy to the result. The result automatically
+inherits the structure from the source. This is called a selective
+transformation.  Use the key 'apply_identity_transformation' to enable
+this mode.
+
+=item
+
+copy data from source to result : the transformation must be told what
+the exact structure of the result is, before the result data can be
+inserted into the result. This is called a constructive
+transformation.
+
+=back
+
+It is possible to combine the two above in a single run, but that is
+currently not tested enough to be sure it works alright, so be very
+careful with that.
+
+To use Data::Transformator, you have to
+
+=over 2
+
+=item 1
+
+Construct the transformation with appropriate options:
+
+=over 2
+
+=item
+
+Give the transformation a name, the name describes the purpose and/or
+activities for the transformation.
+
+=item
+
+Tell the transformation if you want it to run as a selective
+transformation or not (option name
+'apply_identity_transformation'). Transformations can always be used
+as constructive transformations.
+
+=item
+
+Tell the transformation how to find the data source.
+
+=over 2
+
+=item
+
+Or the data source is literal content (option name 'contents').
+
+=item
+
+Or the data source is an object that implements a '->generate()'
+method (option name 'source'). Transformations implement themselves a
+'->generate()' method such that transformations can be cascaded
+easily.
+
+=back
+
+=item
+
+Tell the transformation what to transform (selection) and how to
+transform (generate result).  Data::Transformator uses code references
+to generate results, of alternatively simpler things as explained
+below.  Whenever a code reference is used, it is called with the
+arguments (self, context, current_content).  Here, self is the
+Data::Transformator object, context is an object that describes the
+current context in the source data structure, current_content is the
+generated result so far.  $context->{path} contains a string with the
+path to the current element.  Compononents of the path are '/'
+separated (unless overwritten with the constructor key 'separator').
+This can be used for regular matching, and is especially handy using
+'simple_transformators', see below.
+
+Following keys are available to the constructor of
+Data::Transformator:
+
+=over 2
+
+=item ->{simple_transformators}
+
+Is an array of simple_transformators.  Each simple_transformator is a
+hash with a 'matcher' key that contains a regular expression that is
+matched with the path of the currently selected element.  If there is
+a match, the selected subtree is put in the end result, under the
+value of the 'key' element of the simple_transformator (creating a
+hash in the result if necessary).  If there is no 'key' element in the
+simple_transformator, a 'code' element is looked for, which is a code
+reference.  The code is called to insert an appropriate result.
+
+=item ->{transformators}
+
+Is an array of transformators.  Each transformator is code reference
+that gets called as usual.
+
+=item ->{apply_identity_transformation}
+
+Contains a nested perl data structure that reflects the structure of
+the source data.  All data of the source that is selected by scalars
+that evaluate to true in the content of apply_identity_transformation,
+is inserted in the result.  This key is very handy for selecting a set
+of small portions of data, if the structure of the source is known
+beforehand.
+
+=back
+
+Take a look at existing examples, e.g. in the unit tests of the
+transformation engine.
+
+=back
+
+=item 2
+
+Call the '->transform()' method on the transformator.
+
+=item 3
+
+Use the result data that is returned by the '->transform()' method.
+
+=back
 
 
+=head1 The transformation library
+
+There is a small transformation library embedded in the
+Data::Transformator. This library currently allows to
+
+=over 2
+
+=item
+
+transform an array to be found somewhere in the data source to a hash
+in the result set.
+
+=item
+
+transform a hash to be found somewhere in the data source to an array
+in the result set.
+
+=back
+
+The library generates closures that work on the source data.
+
+
+=head1 BACKGROUND
+
+For the interested reader, please follow these reasoning steps:
+
+=over 2
+
+=item 1
+
+A database query of a relational database (using tables and nested
+tabled) can always be written out in one of the XML query dialects.
+
+=item 2
+
+Following from point 1: a database query can be expressed as a
+structured query.
+
+=item 3
+
+A structured query can be summarized as
+
+=over 2
+
+=item 1
+
+a selection of data from a preexisting data source.
+
+=item 2
+
+a structural simplification of the selection.
+
+=back
+
+=item 4
+
+Combining the above: a query can be defined as applying (1) a
+selective transformation and (2) a constructive transformation in
+sequence to a preexisting data source. This is called cascaded
+transformations.
+
+=back
+
+=head1 BUGS
+
+Does only work with scalars, hashes and arrays.  Support for
+self-referential structures seems broken at the moment.
+
+=head1 AUTHOR
+
+Hugo Cornelis, hugo.cornelis@gmail.com
+
+Copyright 2007 Hugo Cornelis.
+
+This module is free software; you can redistribute it and/or
+modify it under the same terms as Perl itself.
+
+=head1 SEE ALSO
+
+Data::Merger(3), Data::Comparator(3), Clone(3)
+
+=cut
 
 
 package Data::Transformator;

@@ -13,7 +13,7 @@ BEGIN
     $disabled_tests
 	= {
 	   1 => '',
-	   2 => 'works, but unclear if it should',
+	   2 => '',
 	  };
 }
 
@@ -169,8 +169,17 @@ if (!$disabled_tests->{2})
 	   ok_function => { "USS_MON.ant_ctrl.ntcSeEqSxSwitchControl" => 0, },
 	  };
 
+    my $expected_differences
+	= {
+	   'ANT_CTRL' => {
+			  'ok_function' => {
+					    'USS_MON.ant_ctrl.ntcSeEqSxSwitchControl' => 0,
+					   },
+			 },
+	  };
+
     my $transformation
-	= new Data::Transformator
+	= Data::Transformator->new
 	    (
 	     name => 'devices',
 	     contents => $devices,
@@ -218,9 +227,13 @@ if (!$disabled_tests->{2})
 
     my $transformed_data = $transformation->transform();
 
-    print Dumper($transformed_data);
+#     use Data::Dumper;
 
-    my $differences = data_comparator($devices, $transformed_data);
+#     print Dumper($transformed_data);
+
+#     my $differences = data_comparator($devices, $transformed_data);
+
+    my $differences = data_comparator($transformed_data, $expected_differences);
 
     if ($differences->is_empty())
     {
