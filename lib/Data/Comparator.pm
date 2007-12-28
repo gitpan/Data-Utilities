@@ -137,6 +137,11 @@ It is possible to add any of the methods array_comparator(),
 hash_comparator(), data_comparator() to an existing object, or to use
 these as regular subs.
 
+=head1 NOTE
+
+This module is used in the tests for Data::Merger(3) and
+Data::Transformator(3).
+
 =head1 BUGS
 
 Does only work with scalars, hashes and arrays.  Does not work on
@@ -295,6 +300,11 @@ sub scalar_comparator
     if (!defined $scalar1 && !defined $scalar2)
     {
 	return Data::Differences->new(clone(\undef));
+    }
+
+    if (!defined $scalar2)
+    {
+	return Data::Differences->new(clone(\$scalar2));
     }
 
     if (($scalar1 cmp $scalar2) eq 0)

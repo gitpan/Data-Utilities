@@ -14,7 +14,7 @@ BEGIN
 	= {
 	   1 => '',
 	   2 => '',
-	   3 => 'transformation fails miserably, used to work',
+	   3 => 'transformation fails miserably, has never worked I guess',
 	   4 => '',
 	   5 => '',
 	   6 => '',
@@ -25,10 +25,10 @@ BEGIN
 	   11 => '',
 	   12 => '',
 	   13 => '',
-	   14 => 'fails',
-	   15 => 'fails',
-	   16 => 'fails',
-	   17 => 'fails',
+	   14 => '',
+	   15 => '',
+	   16 => '',
+	   17 => '',
 	   18 => '',
 	   19 => '',
 	  };
@@ -1170,7 +1170,7 @@ if (!$disabled_tests->{14})
 
 #     print Dumper($transformed_data);
 
-    my $differences = data_comparator($transformed_data, $tree);
+    my $differences = data_comparator($transformed_data, $expected_data);
 
     if ($differences->is_empty())
     {
@@ -1247,7 +1247,7 @@ if (!$disabled_tests->{15})
 
 #     print Dumper($transformed_data);
 
-    my $differences = data_comparator($transformed_data, $tree);
+    my $differences = data_comparator($transformed_data, $expected_data);
 
     if ($differences->is_empty())
     {
@@ -1371,7 +1371,7 @@ if (!$disabled_tests->{16})
 
 #     print Dumper($transformed_data);
 
-    my $differences = data_comparator($transformed_data, $tree);
+    my $differences = data_comparator($transformed_data, $expected_data);
 
     if ($differences->is_empty())
     {
@@ -1503,7 +1503,7 @@ if (!$disabled_tests->{17})
 
 #     print Dumper($transformed_data);
 
-    my $differences = data_comparator($transformed_data, $tree);
+    my $differences = data_comparator($transformed_data, $expected_data);
 
     if ($differences->is_empty())
     {
@@ -1597,7 +1597,7 @@ if (!$disabled_tests->{18})
 
 #     print Dumper($transformed_data);
 
-    my $differences = data_comparator($transformed_data, $tree);
+    my $differences = data_comparator($transformed_data, $expected_data);
 
     if ($differences->is_empty())
     {

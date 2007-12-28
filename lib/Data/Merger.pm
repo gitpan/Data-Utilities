@@ -8,7 +8,7 @@
 
 =head1 NAME
 
-Data::Transformator - transform nested Perl data structures.
+Data::Merger - merge nested Perl data structures.
 
 =head1 SYNOPSIS
 
@@ -204,6 +204,12 @@ sub merger_hash
 	    my $contents_type = ref $contents->{$section};
 	    my $value_type = ref $value;
 
+	    if (!defined $value
+		&& $options->{undefined}->{overwrite} ne 1)
+	    {
+		next;
+	    }
+
 	    if ($contents_type && $value_type)
 	    {
 		if ($contents_type eq $value_type)
@@ -218,6 +224,11 @@ sub merger_hash
 		    # copy value regardless of type
 
 		    $contents->{$section} = $value;
+		}
+		elsif ($options->{hashes}->{overwrite} eq 0)
+		{
+		    # keep old value
+
 		}
 		else
 		{
@@ -276,6 +287,14 @@ sub merger_array
 	    my $contents_type = ref $contents->[$count];
 	    my $value_type = ref $value;
 
+	    if (!defined $value
+		&& $options->{undefined}->{overwrite} ne 1)
+	    {
+		$count++;
+
+		next;
+	    }
+
 	    if ($contents_type && $value_type)
 	    {
 		if ($contents_type eq $value_type)
@@ -290,6 +309,11 @@ sub merger_array
 		    # overwrite array content
 
 		    $contents->[$count] = $value;
+		}
+		elsif ($options->{arrays}->{overwrite} eq 0)
+		{
+		    # keep old value
+
 		}
 		else
 		{
@@ -330,6 +354,11 @@ sub merger
     my $source = shift;
 
     my $options = shift;
+
+    if (!exists $options->{undefined}->{overwrite})
+    {
+	$options->{undefined}->{overwrite} = 0;
+    }
 
     #t I don't think the todos below are still valid, the idea is
     #t sound though:

@@ -15,7 +15,7 @@ BEGIN
 	   1 => '',
 	   2 => '',
 	   3 => '',
-	   4 => 'fails',
+	   4 => '',
 	   5 => '',
 	   6 => '',
 	   7 => '',
@@ -140,10 +140,19 @@ if (!$disabled_tests->{4})
 	   'cb',
 	  ];
 
+    my $old_but_wrong_I_guess
+	= bless(
+		[
+		 \undef,
+		 bless( do{ \ (my $o = 'cb') }, 'Data::Differences' )
+		],
+		'Data::Differences'
+	       );
+
     my $differences
 	= bless(
 		[
-                 \undef,
+                 undef,
                  bless( do{ \ (my $o = 'cb') }, 'Data::Differences' )
 		],
 		'Data::Differences'

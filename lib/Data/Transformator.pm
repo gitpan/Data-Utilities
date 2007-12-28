@@ -363,7 +363,7 @@ sub _apply_identity_transformation
 
     }
 
-    # link items on stack
+    # link items on stack by looking at the type of one level up
 
     # if the previous result is the root
 
